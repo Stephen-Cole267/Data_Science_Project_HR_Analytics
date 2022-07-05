@@ -9,9 +9,9 @@ Hence, the management has contracted an HR analytics firm, Xander Talent HR, to 
 ## Getting Started
 The data will ideally be in a cloud database which uses some form of SQL, i.e. AWS with MySQL db, Azure with SQL Server, etc. Therefore, we will want to get the data into postgreSQL so that we can do any data gathering for our objective. To get the database set up:
 
-1. Download the CSVs within the [Datasets](!https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder
+1. Download the CSVs within the [Datasets](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder
 2. Create a database with pgAdmin 4 (Can calling it whatever you want)
-3. Create tables within your newly created database using the [SQL](!https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/SQL) file
+3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/SQL) file
 
 > The data should now be ready for you to start the task. If you have any issues please contact me via email - stephen.cole@xandertalent.com 
 
