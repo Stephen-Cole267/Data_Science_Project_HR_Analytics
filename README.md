@@ -1,4 +1,4 @@
-# Data_Science_Project_1
+# HR Analytics DA/DS Project
 > NOTE: This is a Data Analytics/Science project for those who want to test their industry skills. Please upload your solutions by opening a new branch to the main. All files that are instantly merged to the main will be deleted.
 
 ## Project Brief
