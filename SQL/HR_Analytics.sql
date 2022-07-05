@@ -17,7 +17,7 @@ create table employee_survey_data (
     "WorkLifeBalance" int
 );
 
-copy employee_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;
+copy employee_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;  ----- CHANGE FILE PATH TO employee_survey_data.csv HERE
 
 
 /***************** CREATING general_data TABLE *****************/
@@ -51,7 +51,7 @@ create table general_data (
     "YearsWithCurrManager" int
 );
 
-copy general_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;
+copy general_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO general_data.csv HERE
 
 
 /***************** CREATING manager_survey TABLE *****************/
@@ -64,7 +64,7 @@ create table manager_survey_data (
     "PerformanceRating" int
 );
 
-copy manager_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;
+copy manager_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO manager_survey_data.csv HERE
 
 /* Verify that all tables have been copied successfully by running the below */
 
