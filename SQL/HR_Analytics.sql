@@ -33,7 +33,7 @@ create table general_data (
     "Education" int,
     "EducationField" VARCHAR(355),
     "EmployeeCount" bigint,
-    "EmployeeID" int,
+    "EmployeeID" bigint primary key NOT NULL,
     "Gender" varchar(355),
     "JobLevel" int,
     "JobRole" varchar(355),
