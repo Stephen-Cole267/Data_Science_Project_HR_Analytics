@@ -15,7 +15,7 @@ The data will ideally be in a cloud database which uses some form of SQL, i.e. A
 3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/SQL/HR_Analytics.sql) file
 > Note: You need to change the `[PATH_TO_CSV]` to the relevant csv files. The tables are named after their CSV counterparts.
 
- If you get a permission error then you will need to change the permissions of your folder that has the csvs. This can be done by going right clicking on your folder and clicking on `Properties` --> `Security` --> `Edit` --> `Add..` then typing in "Everyone" and pressing `Ok`. This will give SQL access to whatever you put in that folder. You can verify this by checking that there is a tick next to `Read & execute` in the properties of your folder.
+ If you get a permission error then you will need to change the permissions of your folder that has the csvs. This can be done by going right clicking on your folder and clicking on `Properties` --> `Security` --> `Edit` --> `Add..` then typing in "Everyone" and pressing `Ok`. This will give pgadmin 4 access to whatever you put in that folder. You can verify this by checking that there is a tick next to `Read & execute` in the properties of your folder.
 
 You are now ready to start the task. If you have any issues please post within the Data Analytics/Data Science Forum.
 
