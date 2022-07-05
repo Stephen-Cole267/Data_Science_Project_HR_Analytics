@@ -11,10 +11,10 @@
 drop table if exists employee_survey_data;
 
 create table employee_survey_data (
-    "EmployeeID" bigint primary key NOT NULL,
-    "EnvironmentSatisfaction" int,
-    "JobSatisfaction" int,
-    "WorkLifeBalance" int
+    "EmployeeID" BIGINT PRIMARY KEY NOT NULL,
+    "EnvironmentSatisfaction" INT,
+    "JobSatisfaction" INT,
+    "WorkLifeBalance" INT
 );
 
 copy employee_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;  ----- CHANGE FILE PATH TO employee_survey_data.csv HERE
@@ -25,30 +25,30 @@ copy employee_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HE
 drop table if exists general_data;
 
 create table general_data (
-    "Age" int,
+    "Age" INT,
     "Attrition" VARCHAR(3),
     "BusinessTravel" VARCHAR(355),
     "Department" VARCHAR(355),
-    "DistanceFromHome" int,
-    "Education" int,
+    "DistanceFromHome" INT,
+    "Education" INT,
     "EducationField" VARCHAR(355),
-    "EmployeeCount" bigint,
-    "EmployeeID" bigint primary key NOT NULL,
+    "EmployeeCount" BIGINT,
+    "EmployeeID" BIGINT PRIMARY KEY NOT NULL,
     "Gender" varchar(355),
-    "JobLevel" int,
-    "JobRole" varchar(355),
-    "MaritalStatus" varchar(355),
-    "MonthlyIncome" bigint,
-    "NumCompaniesWorked" int,
+    "JobLevel" INT,
+    "JobRole" VARCHAR(355),
+    "MaritalStatus" VARCHAR(355),
+    "MonthlyIncome" BIGINT,
+    "NumCompaniesWorked" INT,
     "Over18" VARCHAR(1),
-    "PercentSalaryHike" int,
-    "StandardHours" int,
-    "StockOptionLevel" int,
-    "TotalWorkingYears" int,
-    "TrainingTimesLastYear" int,
-    "YearsAtCompany" int,
-    "YearsSinceLastPromotion" int,
-    "YearsWithCurrManager" int
+    "PercentSalaryHike" INT,
+    "StandardHours" INT,
+    "StockOptionLevel" INT,
+    "TotalWorkingYears" INT,
+    "TrainingTimesLastYear" INT,
+    "YearsAtCompany" INT,
+    "YearsSinceLastPromotion" INT,
+    "YearsWithCurrManager" INT
 );
 
 copy general_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO general_data.csv HERE
@@ -59,9 +59,9 @@ copy general_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; --
 drop table if exists manager_survey_data;
 
 create table manager_survey_data (
-    "EmployeeID" bigint primary key NOT NULL,
-    "JobInvolvement" int,
-    "PerformanceRating" int
+    "EmployeeID" BIGINT PRIMARY KEY NOT NULL,
+    "JobInvolvement" INT,
+    "PerformanceRating" INT
 );
 
 copy manager_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO manager_survey_data.csv HERE
