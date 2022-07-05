@@ -8,23 +8,23 @@
 /* FOR BRIEF PLEASE SEE THE FOLLOWING LINK: https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics */
 
 /***************** CREATING employee_survey_data TABLE *****************/
-drop table if exists employee_survey_data;
+DROP TABLE IF EXISTS employee_survey_data;
 
-create table employee_survey_data (
+CREATE TABLE employee_survey_data (
     "EmployeeID" BIGINT PRIMARY KEY NOT NULL,
     "EnvironmentSatisfaction" INT,
     "JobSatisfaction" INT,
     "WorkLifeBalance" INT
 );
 
-copy employee_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER;  ----- CHANGE FILE PATH TO employee_survey_data.csv HERE
+COPY employee_survey_data FROM '[PATH_TO_CSV]' NULL AS 'NA' DELIMITER ',' CSV HEADER;  ----- CHANGE FILE PATH TO employee_survey_data.csv HERE
 
 
 /***************** CREATING general_data TABLE *****************/
 
-drop table if exists general_data;
+DROP TABLE IF EXISTS general_data;
 
-create table general_data (
+CREATE TABLE general_data (
     "Age" INT,
     "Attrition" VARCHAR(3),
     "BusinessTravel" VARCHAR(355),
@@ -51,20 +51,20 @@ create table general_data (
     "YearsWithCurrManager" INT
 );
 
-copy general_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO general_data.csv HERE
+COPY general_data FROM '[PATH_TO_CSV]' NULL AS 'NA' DELIMITER ',' CSV HEADER; ----- CHANGE FILE PATH TO general_data.csv HERE
 
 
 /***************** CREATING manager_survey TABLE *****************/
 
-drop table if exists manager_survey_data;
+DROP TABLE IF EXISTS manager_survey_data;
 
-create table manager_survey_data (
+CREATE TABLE manager_survey_data (
     "EmployeeID" BIGINT PRIMARY KEY NOT NULL,
     "JobInvolvement" INT,
     "PerformanceRating" INT
 );
 
-copy manager_survey_data from '[PATH_TO_CSV]' NULL as 'NA' delimiter ',' CSV HEADER; ----- CHANGE FILE PATH TO manager_survey_data.csv HERE
+COPY manager_survey_data FROM '[PATH_TO_CSV]' NULL AS 'NA' DELIMITER ',' CSV HEADER; ----- CHANGE FILE PATH TO manager_survey_data.csv HERE
 
 /* Verify that all tables have been copied successfully by running the below */
 
