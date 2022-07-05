@@ -11,10 +11,11 @@ The data will ideally be in a cloud database which uses some form of SQL, i.e. A
 
 1. Download the CSVs within the [Datasets](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder into your directory
 > Note: Keep track of where you save these CSVs as you will need to add the paths to the SQL file.
-2. Create a database with pgAdmin 4 (Can calling it whatever you want)
+2. Create a database in pgAdmin 4 (Can call it whatever you want)
 3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/SQL/HR_Analytics.sql) file
+> Note: You need to change the `[PATH_TO_CSV]` to the relevant csv files. The tables are named after their CSV counterparts.
 
-> The data should now be ready for you to start the task. If you have any issues please post within the Data Analytics/Data Science Forums.
+You are now ready to start the task. If you have any issues please post within the Data Analytics/Data Science Forums.
 
 ## Steps to help if you are stuck
 
