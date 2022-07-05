@@ -9,7 +9,7 @@ Hence, the management has contracted an HR analytics firm, Xander Talent HR, to 
 ## Getting Started
 The data will ideally be in a cloud database which uses some form of SQL, i.e. AWS with MySQL db, Azure with SQL Server, etc. Therefore, we will want to get the data into postgreSQL so that we can do any data gathering for our objective. To get the database set up:
 
-1. Download the CSVs within the Datasets folder
+1. Download the CSVs within the [Datasets](!https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder
 
 ## Steps to help if you are stuck
 
