@@ -10,17 +10,23 @@ Hence, the management has contracted an HR analytics firm, Xander Talent HR, to 
 The data will ideally be in a cloud database which uses some form of SQL, i.e. AWS with MySQL db, Azure with SQL Server, etc. Therefore, we will want to get the data into postgreSQL so that we can do any data gathering for our objective. To get the database set up:
 
 1. Download the CSVs within the [Datasets](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder into your directory
-> Note: Keep track of where you save these CSVs as you will need to add the paths to the SQL file.
+> Note: Keep track of where you save these CSVs as you will need to add some of the paths to the SQL file.
 2. Create a database in pgAdmin 4 (Can call it whatever you want)
 3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/SQL/HR_Analytics.sql) file
 > Note: You need to change the `[PATH_TO_CSV]` to the relevant csv files. The tables are named after their CSV counterparts.
 
-You are now ready to start the task. If you have any issues please post within the Data Analytics/Data Science Forums.
+ If you get a permission error then you will need to change the permissions of your folder that has the csvs. This can be done by going right clicking on your folder and clicking on `Properties` --> `Security` --> `Edit` --> `Add..` then typing in "Everyone" and pressing `Ok`. This will give SQL access to whatever you put in that folder. You can verify this by checking that there is a tick next to `Read & execute` in the properties of your folder.
 
-## Steps to help if you are stuck
+You are now ready to start the task. If you have any issues please post within the Data Analytics/Data Science Forum.
+
+The data dictionary for the tables within SQL can be found [here](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/Datasets/data_dictionary.xlsx).
+
+## Tips
 
 ### Requirements Gathering
-The start to any project is to make sure you have clear and well-defined requirements for your project. Most projects start with a vague idea of what the stakeholder wants so as a consultant we need to get as much information out of them as possible. 
+The start to any project is to make sure you have clear and well-defined requirements for your project. Most projects start with a vague idea of what the stakeholder wants, and as a consultant, we will never have as much knowledge about their problem/business context as they do. Therefore, we need to get as much information out of them as possible, as they will subconsciously assume that we know everything. For this project, Stephen Cole will be the stakeholder.
+
+> If you don't know the answer to any question then you should always ask - NEVER ASSUME. This will only risk the accuracy of your work and end up having to do everything all over again if you wrongly assume.
 
 Questions to ask yourself constantly throughout the project are:
 - What is the purpose of this project, why does the stakeholder want this and what is the desired outcome of the project?
@@ -28,5 +34,8 @@ Questions to ask yourself constantly throughout the project are:
 
 Questions more specifically for Data Science:
 - Are there any features that I could create to improve the model?
-- What machine learning models are applicable to the project' target?
+- What machine learning models are applicable to the project's target?
+- Is the target feature for my model correct?
 
+## Results
+### Data Analytics
