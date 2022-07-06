@@ -24,7 +24,7 @@ The data dictionary for the tables within SQL can be found [here](https://github
 ## Tips
 
 ### Requirements Gathering
-The start to any project is to make sure you have clear and well-defined requirements for your project. Most projects start with a vague idea of what the stakeholder wants, and as a consultant, we will never have as much knowledge about their problem/business context as they do. Therefore, we need to get as much information out of them as possible, as they will subconsciously assume that we know everything. For this project, Stephen Cole will be the stakeholder.
+The start to any project is to make sure you have clear and well-defined requirements for your project. Most projects start with a vague idea of what the stakeholder wants, and as a consultant, we will never have as much knowledge about their problem/business context as they do. Therefore, we need to get as much information out of them as possible, as they will subconsciously assume that we know everything. For this project, Stephen Cole & Alex Naylor will be the stakeholders.
 
 > If you don't know the answer to any question then you should always ask - NEVER ASSUME. This will only risk the accuracy of your work and end up having to do everything all over again if you wrongly assume.
 
