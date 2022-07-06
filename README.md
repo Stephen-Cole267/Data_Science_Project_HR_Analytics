@@ -39,3 +39,9 @@ Questions more specifically for Data Science:
 
 ## Results
 ### Data Analytics
+A report of your findings either through a presentation or a dashboard or even both!
+
+### Data Science
+A machine learning model that predicts the target, with a report of the model's performance and any other analytics.
+
+
