@@ -39,6 +39,8 @@ Questions more specifically for Data Science:
 - What machine learning models are applicable to the project's target?
 - Is the target feature for my model correct?
 
+If you do not know the answer or are unsure, then I highly recommend asking the stakeholders.
+
 ## Results
 ### Data Analytics
 A report of your findings either through a presentation or a dashboard or even both!
