@@ -1,0 +1,272 @@
+---
+title: "JWC HR Analytics"
+author: "Eugene Chai"
+date: '2022-08-09'
+---
+This report aims to ascertain the variables influencing JWC's high level of attrition, the rate at which employees leave an organisation, either voluntarily or due to dismissal. A machine learning algorithm will be deployed to determine the priortise the necessary actions for reducing new recruitment.
+
+```{r}
+#Importing relevant packages
+library(tidyverse)
+library(readr)
+library(tibble)
+library(caret)
+library(ggplot2)
+library(reshape2)
+require(ISLR)
+library(caTools)
+library(car)
+```
+
+# Data Gathering
+Most of the employee data is stored in a database. Therefore, it is necessary to connect R studio to the database server in order to obtain the data for analysis.
+```{r include=FALSE}
+#Define the database credentials
+library(DBI)
+db <- 'jwc_db'  #provide the name of your db
+host_db <- 'localhost' 
+db_port <- '5432'  # or any other port specified by the DBA
+db_user <- 'postgres' 
+db_password <- 'password'
+con <- dbConnect(RPostgres::Postgres(), dbname = db, host=host_db, port=db_port,user=db_user, password=db_password)  
+
+```
+
+```{r}
+#Connect to pgadmin 4
+con <- dbConnect(RPostgres::Postgres(), dbname = db, host=host_db, port=db_port,user=db_user, password=db_password)  
+```
+
+```{r}
+#Gather all the data.
+employee_survey_data <- dbGetQuery(con, "SELECT * FROM employee_survey_data")
+general_data<-dbGetQuery(con,"SELECT * FROM general_data")
+manager_survey_data<-dbGetQuery(con,"SELECT * FROM manager_survey_data")
+
+#Check-in and check-out data from csvs
+check_in<-read.csv("Datasets/in_time.csv")
+check_out<-read.csv("Datasets/out_time.csv")
+```
+
+# Duplicates
+```{r}
+employee_survey_data$EmployeeID%>%unique()%>%length()
+general_data$EmployeeID%>%unique()%>%length()
+manager_survey_data$EmployeeID%>%unique()%>%length()
+check_in$X%>%unique()%>%length()
+check_out$X%>%unique()%>%length()
+#No duplicate rows
+
+```
+
+
+# Join all the datasets into one and create an overtime variable
+
+A potentially useful explanatory variable that may affect the attribution rate is whether an employee works overtime or not. This can be calculated by manipulating the check-in and check-out data.
+```{r}
+check_in_na<-as.tibble(t(colSums(is.na(check_in))))
+#If all the employees did not check-in on a particular day, it can be assumed that the office is closed on that day. 
+closed_dates<-check_in_na%>%pivot_longer(cols=colnames(check_in_na),names_to="Dates",values_to="Number_of_null_values")%>%filter(Number_of_null_values==4410)
+closed_dates<-unlist(closed_dates[,1])
+```
+
+```{r}
+#Remove all dates when the office is closed
+check_in<-check_in[,!(names(check_in)%in% closed_dates)]
+check_out<-check_out[,!(names(check_out)%in%closed_dates)]
+```
+
+```{r}
+all_dates<-names(check_in)[2:length(names(check_in))]
+```
+
+```{r}
+check_in_long<-check_in%>%pivot_longer(cols=all_dates,names_to="Dates",values_to="check_in_time")%>%mutate(id=str_c(X,Dates,sep=""))%>%select(X,id,check_in_time)
+check_out_long<-check_out%>%pivot_longer(cols=all_dates,names_to="Dates",values_to="check_out_time")%>%mutate(id=str_c(X,Dates,sep=""))%>%select(id,check_out_time)
+
+```
+
+```{r}
+#Ensure that the check-in and check-out time variables are on the same dataframe and are converted into date objects. 
+check_in_out<-check_in_long%>%inner_join(check_out_long,by="id")%>%mutate(check_in_time=as.POSIXlt(check_in_time),check_out_time=as.POSIXlt(check_out_time))
+```
+
+```{r}
+#Create a new column that represents the average working hours for each employee.
+check_in_out<-check_in_out%>%mutate(working_hours=difftime(check_out_time,check_in_time,units="hours"))
+```
+
+```{r}
+check_in_out<-check_in_out%>%group_by(X)%>%summarise(avg_working_hours=mean(working_hours,na.rm=TRUE))%>%rename(EmployeeID=X)
+```
+
+Join all the relevant data together into one dataframe
+```{r}
+df<-general_data%>%inner_join(manager_survey_data,by="EmployeeID")%>%inner_join(employee_survey_data,by="EmployeeID")%>%inner_join(check_in_out,by="EmployeeID")
+```
+
+```{r}
+#Add a new column that determines if an employee has worked overtime or not
+df<-df%>%mutate(overtime=if_else(avg_working_hours>8,"Yes","No"))
+```
+
+
+# Data Imputation
+```{r}
+colSums(is.na(df))
+```
+```{r}
+#The null values in NumCompaniesWorked can be filled by using estimated values formed by using both YearsAtCompany and TotalWorkingYears.
+na_numcompaniesworked<-df %>% filter(is.na(NumCompaniesWorked))%>%select(EmployeeID,NumCompaniesWorked,YearsAtCompany,TotalWorkingYears)
+```
+
+```{r}
+#An important statistics to calculate is the average years an employee works at a company.
+df%>%ggplot(aes(x=YearsAtCompany))+geom_density()
+```
+Since the distribution is highly skewed to the right, it is best to use median to estimate the average number of years an employee works at a company. 
+```{r}
+df$NumCompaniesWorked[is.na(df$NumCompaniesWorked)]<-na_numcompaniesworked$TotalWorkingYears%/%median(df$YearsAtCompany,na.rm = TRUE)
+```
+
+```{r}
+# The mode is used to replace the null values for EnvironmentSatisfaction
+df%>%ggplot(aes(x=EnvironmentSatisfaction))+geom_bar()
+df$EnvironmentSatisfaction[is.na(df$EnvironmentSatisfaction)]<-3
+```
+
+```{r}
+# The mode is used to replace the null values for JobSatisfaction
+df%>%ggplot(aes(x=JobSatisfaction))+geom_bar()
+df$JobSatisfaction[is.na(df$JobSatisfaction)]<-4
+```
+
+```{r}
+# The mode is used to replace the null values for WorkLifeBalance
+df%>%ggplot(aes(x=WorkLifeBalance))+geom_bar()
+df$WorkLifeBalance[is.na(df$WorkLifeBalance)]<-3
+```
+
+```{r}
+#To replace null values for TotalWorkingYears,estimated values are calculated using NumCompaniesWorked and TotalWorkingYears
+df %>% filter(is.na(TotalWorkingYears))%>%select(EmployeeID,NumCompaniesWorked,YearsAtCompany,TotalWorkingYears)
+```
+```{r}
+#Manually fill in values where NumCompaniesWorked is equal to 0 or 1
+df[2368,20]<-10
+df[4410,20]<-21
+df[24,20]<-25
+df[3819,20]<-6
+na_totalworkingyears<-df %>% filter(is.na(TotalWorkingYears))%>%select(EmployeeID,NumCompaniesWorked,YearsAtCompany,TotalWorkingYears)
+```
+
+```{r}
+# Take years at current company plus the additional years from other companies (estimated by using the median years an employee works for a particular company).
+df$TotalWorkingYears[is.na(df$TotalWorkingYears)]<-na_totalworkingyears$YearsAtCompany+((na_totalworkingyears$NumCompaniesWorked-1)*median(df$YearsAtCompany,na.rm = TRUE))
+```
+
+```{r}
+#Confirm that there are no more null values
+colSums(is.na(df))
+```
+
+# Feature Engineering
+## Ensure that each variable has the correct data type
+```{r}
+glimpse(df)
+```
+
+```{r}
+#Remove redundant variables for modelling
+df<-df%>%select(-c(EmployeeCount,EmployeeID,Over18,StandardHours,avg_working_hours))
+#-Remove EmployeeCount and Over18 since they are constant variables
+#-Remove StandardHours and avg_working_hours since these two variablese are represent in the overtime variable
+```
+
+```{r}
+#Encode categorical variables that have two classes into 1s and 0s.
+df<-df%>%mutate(Attrition=if_else(Attrition=="Yes",1,0),Gender=if_else(Gender=="Male",1,0),overtime=if_else(overtime=="Yes",1,0))
+```
+
+```{r}
+#Further encode categorical variables into factors with more than 2 classes.
+df<-df%>%mutate(BusinessTravel=factor(BusinessTravel),EducationField=factor(EducationField),JobRole=factor(JobRole),Department=factor(Department),MaritalStatus=factor(MaritalStatus))
+cols_tobe_hot_encoded<-df%>%select(MaritalStatus,BusinessTravel,EducationField,JobRole,Department)
+df<-df%>%select(-c(MaritalStatus,BusinessTravel,EducationField,JobRole,Department))
+```
+
+```{r}
+dummy<-dummyVars("~.",data=cols_tobe_hot_encoded)
+df2<-data.frame(predict(dummy,newdata=cols_tobe_hot_encoded))
+
+```
+
+```{r}
+df<-cbind(df,df2)
+```
+```{r}
+#Convert nominal variables into ordinal variables
+df<-df%>%mutate(Education=factor(Education,ordered = TRUE,levels=c(1,2,3,4,5)),EnvironmentSatisfaction=factor(EnvironmentSatisfaction,ordered=TRUE,levels=c(1,2,3,4)),JobInvolvement=factor(JobInvolvement,ordered=TRUE,levels=c(1,2,3,4)),JobSatisfaction=factor(JobSatisfaction,ordered=TRUE,levels=c(1,2,3,4)),PerformanceRating=factor(PerformanceRating,ordered=TRUE,levels=c(1,2,3,4)),WorkLifeBalance=factor(WorkLifeBalance,ordered = TRUE,levels=c(1,2,3,4)))
+```
+
+```{r}
+#Check the distribution of continuous numerical variables and deal with outliers.
+df<-df%>%mutate(MonthlyIncome=as.numeric(MonthlyIncome))
+#Have not included the MonthlyIncome because it ruins the scale of the visualisation. 
+continuous_variables_excludeincome<-df%>%select(c(Age,DistanceFromHome,NumCompaniesWorked,PercentSalaryHike,StockOptionLevel,TrainingTimesLastYear,YearsAtCompany,YearsSinceLastPromotion,YearsWithCurrManager))
+continuous_variables_excludeincome_long<-melt(continuous_variables_excludeincome)
+continuous_variables_excludeincome_long%>%ggplot(aes(x=variable,y=value))+geom_boxplot()+coord_flip()
+```
+```{r}
+#Create a boxplot that illustrates the disbrution of MonthlyIncome since it not shown above.
+df%>%ggplot(aes(y=MonthlyIncome))+geom_boxplot()+coord_flip()
+```
+Based on the two plots above, it is clear to see that MonthlyIncome contains the most outliers and then it is followed by YearsAtCompany. 
+```{r}
+#Let's remove some outliers whilst maintaing as much data as possible,
+dim(df)
+quantile(df$MonthlyIncome)
+quantile(df$YearsAtCompany)
+quantile(df$YearsSinceLastPromotion)
+quantile(df$YearsWithCurrManager)
+df<-df%>%subset(MonthlyIncome<83800 & YearsAtCompany < 9 & YearsSinceLastPromotion < 3 & YearsWithCurrManager<7)
+```
+
+```{r}
+#Confirm that most of outliers are removed
+continuous_variables_excludeincome<-df%>%select(c(Age,DistanceFromHome,NumCompaniesWorked,PercentSalaryHike,StockOptionLevel,TrainingTimesLastYear,YearsAtCompany,YearsSinceLastPromotion,YearsWithCurrManager))
+continuous_variables_excludeincome_long<-melt(continuous_variables_excludeincome)
+continuous_variables_excludeincome_long%>%ggplot(aes(x=variable,y=value))+geom_boxplot()+coord_flip()
+df%>%ggplot(aes(y=MonthlyIncome))+geom_boxplot()+coord_flip()
+```
+
+
+```{r}
+#Check if there is a need to scale the data.
+continuous_variables<-df%>%select(c(Age,DistanceFromHome,NumCompaniesWorked,PercentSalaryHike,StockOptionLevel,TrainingTimesLastYear,YearsAtCompany,YearsSinceLastPromotion,YearsWithCurrManager,MonthlyIncome))
+summary(continuous_variables)
+```
+
+```{r}
+cor(df[, unlist(lapply(df, is.numeric))])   
+```
+According, to the summary statistics there seems by a huge difference between the min and max values for each variable, indicating that there is a scale/normalise these variables.
+```{r}
+df<-df%>%mutate(Age=scale(Age,center=TRUE,scale=TRUE),DistanceFromHome=scale(DistanceFromHome,center=TRUE,scale=TRUE),PercentSalaryHike=scale(PercentSalaryHike,center=TRUE,scale=TRUE),StockOptionLevel=scale(StockOptionLevel,center=TRUE,scale=TRUE),TrainingTimesLastYear=scale(TrainingTimesLastYear,center=TRUE,scale=TRUE),YearsAtCompany=scale(YearsAtCompany,center=TRUE,scale=TRUE),YearsSinceLastPromotion=scale(YearsSinceLastPromotion,center=TRUE,scale=TRUE),YearsWithCurrManager=scale(YearsWithCurrManager,center=TRUE,scale=TRUE),MonthlyIncome=scale(MonthlyIncome,center=TRUE,scale=TRUE))
+```
+# Modelling
+```{r}
+#Seperate the data 
+split<-sample.split(df,SplitRatio=0.8)
+train<-subset(df,split=="TRUE")
+test<-subset(df,split=="FALSE")
+```
+
+```{r}
+#Implementing the logistic regression
+mymodel<-glm(Attrition~Age+DistanceFromHome+Education+Gender+JobLevel+MonthlyIncome+NumCompaniesWorked+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsSinceLastPromotion+YearsWithCurrManager+PerformanceRating+EnvironmentSatisfaction+JobInvolvement+JobSatisfaction+WorkLifeBalance+overtime+MaritalStatus.Divorced+MaritalStatus.Married+BusinessTravel.Non.Travel+BusinessTravel.Travel_Frequently+BusinessTravel.Travel_Rarely,data=train,family="binomial")
+```
+```{r}
+#vif analysis
+vif(mymodel)
+```
