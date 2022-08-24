@@ -445,38 +445,3 @@ def lgb_hpt_tune(LOGGER, base_params, grid, X_train, y_train, nfold, stratified,
     LOGGER.info("lgb_hpt_tune total time: {}.".format( str(timedelta(seconds=total_time)) ))
         
     return base_params
-
-
-
-
-
-def xgb_calculate_performance(X_test, y_test, model, model_type, thr=0.5, average='weighted'):
-    """
-    Calculates model performance
-    """
-    performance = {}
-    dtest = xgb.DMatrix(X_test, label = y_test)
-    y_pred_prob = model.predict(dtest)
-    if model_type=='binaryclass':
-        performance['acc_score'] = accuracy_score(y_test, y_pred_prob > thr)
-        performance['prec_score'] = precision_score(y_test, y_pred_prob > thr)
-        performance['rec_score'] = recall_score(y_test, y_pred_prob > thr)
-        performance['roc_auc'] = roc_auc_score(y_test, y_pred_prob)
-        performance['F1_score'] = f1_score(y_test, y_pred_prob > thr)
-        print(classification_report(y_test, y_pred_prob>thr,digits=4))
-        
-    if model_type=='multiclass':
-        y_pred=y_pred_prob.argmax(axis=1)
-        performance['acc_score'] = accuracy_score(y_test, y_pred)#,average =average)
-        performance['prec_score'] = precision_score(y_test, y_pred,average =average)
-        performance['rec_score'] = recall_score(y_test, y_pred,average =average)
-        performance['roc_auc'] = roc_auc_score(y_test, y_pred_prob,average =average,multi_class='ovr')
-
-        performance['F1_score'] = f1_score(y_test, y_pred ,average =average)
-        print(classification_report(y_test, y_pred,digits=4))
-        
-    if model_type=='regression':
-        y_pred = model.predict(dtest)
-        performance['rmse'] = mean_squared_error(y_test, y_pred, squared=False)
-
-    return performance
