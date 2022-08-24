@@ -1,0 +1,5 @@
+log_config:
+  path_to_folder: C:/Users/coles2/Documents/Xander/Data_Science_Project_HR_Analytics-main/StephenCole/log
+  last_run_date: 2022-08-18
+general_config:
+  path_to_data: C:/Users/coles2/Documents/Xander/Data_Science_Project_HR_Analytics-main/Datasets
