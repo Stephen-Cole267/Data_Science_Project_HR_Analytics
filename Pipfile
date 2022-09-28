@@ -17,6 +17,7 @@ keras = "*"
 cryptography = "*"
 openpyxl = "*"
 xgboost = "*"
+streamlit = "*"
 
 [dev-packages]
 nbconvert = "*"
