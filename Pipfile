@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-jupyter = "*"
 pandas = "*"
 numpy = "*"
 scikit-learn = "*"
@@ -12,8 +11,16 @@ sqlalchemy = "*"
 psycopg2-binary = "*"
 matplotlib = "*"
 seaborn = "*"
+plotly = "*"
+tensorflow = "*"
+keras = "*"
+cryptography = "*"
+openpyxl = "*"
+xgboost = "*"
 
 [dev-packages]
+nbconvert = "*"
+jupyter = "*"
 pylama = "*"
 black = {extras = ["jupyter"], version = "*"}
 
