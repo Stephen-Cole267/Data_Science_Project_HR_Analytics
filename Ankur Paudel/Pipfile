@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pandas = "*"
+numpy = "*"
+scikit-learn = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
+plotly = "*"
+xgboost = "*"
+streamlit = "*"
+
+[dev-packages]
+nbconvert = "*"
+jupyter = "*"
+pylama = "*"
+black = {extras = ["jupyter"], version = "*"}
+
+[requires]
+python_version = "3.10"

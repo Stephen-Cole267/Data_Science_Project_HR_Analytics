@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  dash:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - ${STREAMLIT_SERVER_PORT}:${STREAMLIT_SERVER_PORT}
