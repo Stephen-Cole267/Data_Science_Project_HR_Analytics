@@ -254,3 +254,14 @@ if __name__ == "__main__":
     if VERBOSE:
         # describe IncomeBand
         print(general_data["IncomeBand"].describe())
+
+    # Drop Over18 column
+    general_data.drop("Over18", axis=1, inplace=True)
+
+    # Drop EmployeeCount column
+    general_data.drop("EmployeeCount", axis=1, inplace=True)
+
+    # Drop MaritalStatus column
+    general_data.drop("MaritalStatus", axis=1, inplace=True)
+
+    print(general_data.info())
