@@ -75,6 +75,9 @@ def load_in_time_data(verbose=False):
     # Read data from csv file
     df = pd.read_csv("../../Datasets/in_time.csv")
 
+    # Delete first column
+    df.drop(df.columns[0], axis=1, inplace=True)
+
     if verbose:
         # Look at the info
         print(df.info())
@@ -103,6 +106,9 @@ def load_in_time_data(verbose=False):
 def load_out_time_data(verbose=False):
     # Read data from csv file
     df = pd.read_csv("../../Datasets/out_time.csv")
+
+    # Delete first column
+    df.drop(df.columns[0], axis=1, inplace=True)
 
     if verbose:
         # Look at the info
@@ -140,6 +146,38 @@ if __name__ == "__main__":
     out_time_data = load_out_time_data()
 
     # Add features to data
+
+    # Create new dataframe with day and length of day by subtracting out_time from in_time
+
+    # Create empty dataframe
+    day_length_df = pd.DataFrame()
+
+    for day_start in in_time_data.columns:
+        # Check if day_end is in out_time_data
+        if day_start in out_time_data.columns:
+            # Calculate length of day using mean of in_time and out_time
+            day_end = out_time_data.columns[in_time_data.columns.get_loc(day_start)]
+        else:
+            continue
+
+        # Use concat to avoid PerformanceWarning
+        day_length_df = pd.concat(
+            [
+                day_length_df,
+                pd.DataFrame(
+                    {
+                        f"{day_start}_length": (
+                            out_time_data[day_end] - in_time_data[day_start]
+                        ).dt.seconds
+                        / (60 * 60)
+                    }
+                ),
+            ],
+            axis=1,
+        )
+
+    print(day_length_df.head())
+    print(day_length_df.info())
 
     # Change employee education number to word
     general_data["EducationLevel"] = general_data["Education"].map(
