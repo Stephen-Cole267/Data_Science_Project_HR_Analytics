@@ -1,41 +1,39 @@
+"""
+This script loads and cleans the data from the csv files and adds features to the data.
+"""
+
+import numpy as np
 import pandas as pd
 
 
-def load_general_data(verbose=False):
+def load_general_data(verbose: bool = False) -> pd.DataFrame:
+    """Load general data from csv file and return dataframe."""
+
     # Read data from csv file
     df = pd.read_csv("../../Datasets/general_data.csv")
 
     if verbose:
         # Look at the info
         print(df.info())
-
         # Are there any nulls?
         print(df.isnull().sum())
         # NumCompaniesWorked has 19 nulls; TotalWorkingYears has 9 nulls
 
     # Drop the nulls
     df.dropna(inplace=True)
+
     return df
 
 
-def load_out_time_data():
-    # Read data from csv file
-    df = pd.read_csv("../../Datasets/out_time.csv")
+def load_employee_survey_data(verbose: bool = False) -> pd.DataFrame:
+    """Load employee survey data from csv file and return dataframe."""
 
-    # TODO: what is this?
-    print(df.info())
-    print(df.head())
-    return df
-
-
-def load_employee_survey_data(verbose=False):
     # Read data from csv file
     df = pd.read_csv("../../Datasets/employee_survey_data.csv")
 
     if verbose:
         # Look at the info
         print(df.info())
-
         # Are there any nulls?
         print(df.isnull().sum())
 
@@ -53,25 +51,27 @@ def load_employee_survey_data(verbose=False):
     return df
 
 
-def load_manager_survey_data(verbose=False):
+def load_manager_survey_data(verbose: bool = False) -> pd.DataFrame:
+    """Load manager survey data from csv file and return dataframe."""
+
     # Read data from csv file
     df = pd.read_csv("../../Datasets/manager_survey_data.csv")
 
     if verbose:
         # Look at the info
         print(df.info())  # All ints
-
         # Are there any nulls?
         print(df.isnull().sum())  # None!
-
         # Are there any duplicate EmployeeIDs?
-        print(df["EmployeeID"].is_unique)  # True
+        print(df["EmployeeID"].is_unique)  # There are none
 
     # No need to drop nulls or change dtypes
     return df
 
 
-def load_in_time_data(verbose=False):
+def load_in_time_data(verbose: bool = False) -> pd.DataFrame:
+    """Load in time data from csv file and return dataframe."""
+
     # Read data from csv file
     df = pd.read_csv("../../Datasets/in_time.csv")
 
@@ -103,7 +103,9 @@ def load_in_time_data(verbose=False):
     return df
 
 
-def load_out_time_data(verbose=False):
+def load_out_time_data(verbose: bool = False) -> pd.DataFrame:
+    """Load out time data from csv file and return dataframe."""
+
     # Read data from csv file
     df = pd.read_csv("../../Datasets/out_time.csv")
 
@@ -136,7 +138,7 @@ def load_out_time_data(verbose=False):
 
 
 if __name__ == "__main__":
-    verbose = True
+    VERBOSE = True
 
     # Load data
     general_data = load_general_data()
@@ -147,7 +149,7 @@ if __name__ == "__main__":
 
     # Add features to data
 
-    # Create new dataframe with day and length of day by subtracting out_time from in_time
+    # Create new dataframe with day and length of day
 
     # Create empty dataframe
     day_length_df = pd.DataFrame()
@@ -176,15 +178,25 @@ if __name__ == "__main__":
             axis=1,
         )
 
+    # Check if employees are working overtime (e.g., over eight hours a day)
+    day_length_df["has_ever_worked_overtime"] = day_length_df.apply(
+        lambda row: 1 if row.max() > 8 else 0, axis=1
+    )
+    # Calculate percentage of days worked overtime
+    day_length_df["overtime_percentage"] = day_length_df.apply(
+        lambda row: row.sum() / len(row), axis=1
+    )
+
     print(day_length_df.head())
     print(day_length_df.info())
+    print(day_length_df.describe())
 
     # Change employee education number to word
     general_data["EducationLevel"] = general_data["Education"].map(
         {1: "Below College", 2: "College", 3: "Bachelor", 4: "Master", 5: "Doctor"}
     )
 
-    if verbose:
+    if VERBOSE:
         print(general_data["EducationLevel"].value_counts())
         print(general_data.info())
 
@@ -205,21 +217,17 @@ if __name__ == "__main__":
         "JobInvolvement"
     ].map(satisfaction_level)
 
-    # Relationship satisfaction to word
-    # employee_survey_data["RelationshipSatisfactionLevel"] = employee_survey_data["RelationshipSatisfaction"].map(satisfaction_level)
-    # TODO: Ask why this is missing?
-
     # Performance rating to word
     manager_survey_data["PerformanceRatingLevel"] = manager_survey_data[
         "PerformanceRating"
     ].map({1: "Low", 2: "Good", 3: "Excellent", 4: "Outstanding"})
 
-    # Work life balance to word
+    # Work-life balance to word
     employee_survey_data["WorkLifeBalanceLevel"] = employee_survey_data[
         "WorkLifeBalance"
     ].map({1: "Bad", 2: "Good", 3: "Better", 4: "Best"})
 
-    if verbose:
+    if VERBOSE:
         # Check descriptive stats
         print(employee_survey_data.describe())
         print(manager_survey_data.describe())
@@ -231,4 +239,18 @@ if __name__ == "__main__":
         "_", " "
     )
 
-    # todo: what is stock option level?
+    # categorise incomes into income bands
+    lower_quartile_income = general_data["MonthlyIncome"].quantile(0.25)
+    upper_quartile_income = general_data["MonthlyIncome"].quantile(0.75)
+    mean_income = general_data["MonthlyIncome"].mean()
+
+    # create income bands
+    general_data["IncomeBand"] = pd.cut(
+        general_data["MonthlyIncome"],
+        bins=[0, lower_quartile_income, mean_income, upper_quartile_income, np.inf],
+        labels=["Low", "Medium", "High", "Very High"],
+    )
+
+    if VERBOSE:
+        # describe IncomeBand
+        print(general_data["IncomeBand"].describe())
