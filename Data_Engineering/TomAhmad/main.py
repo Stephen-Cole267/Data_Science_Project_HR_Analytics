@@ -110,10 +110,10 @@ def load_out_time_data(verbose=False):
         print(df.head())
 
         # count nulls
-        print(df.isnull().sum()) # there are loads of nulls
+        print(df.isnull().sum())  # there are loads of nulls
 
         # do any columns consist of all nulls?
-        print(f"Do any columns consist of all nulls? {df.isnull().all().any()}") # yes
+        print(f"Do any columns consist of all nulls? {df.isnull().all().any()}")  # yes
 
     # If column consists of lots of nulls, drop it
     df.dropna(axis=1, thresh=1000, inplace=True)
