@@ -21,17 +21,17 @@ For this project, Stephen Cole & Alex Naylor will be the stakeholders.
 ## Getting Started
 The data will ideally be in a cloud database which uses some form of SQL, i.e. AWS with MySQL db, Azure with SQL Server, etc. Therefore, we will want to get the data into postgreSQL so that we can do any data gathering for our objective. To get the database set up:
 
-1. Download the CSVs within the [Datasets](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/main/Datasets) folder into your directory
+1. Download the CSVs within the [Datasets](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/tree/Master/Datasets) folder into your directory
 > Note: Keep track of where you save these CSVs as you will need to add some of the paths to the SQL file.
 2. Create a database in pgAdmin 4 (Can call it whatever you want)
-3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/SQL/HR_Analytics.sql) file
+3. Create tables within your newly created database using the [SQL](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/Master/SQL/HR_Analytics.sql) file
 > Note: You need to change the `[PATH_TO_CSV]` to the relevant csv files. The tables are named after their CSV counterparts.
 
  If you get a permission error then you will need to change the permissions of your folder that has the csvs. This can be done by going right clicking on your folder and clicking on `Properties` --> `Security` --> `Edit` --> `Add..` then typing in "Everyone" and pressing `Ok`. This will give pgadmin 4 access to whatever you put in that folder. You can verify this by checking that there is a tick next to `Read & execute` in the properties of your folder.
 
 You are now ready to start the task. If you have any issues please post within the Data Analytics/Data Science Forum.
 
-The data dictionary for the tables within SQL can be found [here](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/main/Datasets/data_dictionary.xlsx).
+The data dictionary for the tables within SQL can be found [here](https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics/blob/Master/Datasets/data_dictionary.xlsx).
 
 ## Tips
 
