@@ -5,8 +5,6 @@
 /* LAST UPDATED: 2022-07-05 */
 /* LAST UPDATED BY: STEPHEN COLE */
 
-/* FOR BRIEF PLEASE SEE THE FOLLOWING LINK: https://github.com/Stephen-Cole267/Data_Science_Project_HR_Analytics */
-
 /***************** CREATING employee_survey_data TABLE *****************/
 DROP TABLE IF EXISTS employee_survey_data;
 
